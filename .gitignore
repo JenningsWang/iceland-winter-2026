@@ -1,0 +1,8 @@
+dist/
+iceland-winter-2026.html
+.openai/
+.DS_Store
+node_modules/
+*.log
+__pycache__/
+data/raw/
