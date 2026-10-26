@@ -2,6 +2,10 @@
 
 一份中文交互式冰岛冬季自驾攻略。左侧是真实地理地图，右侧联动每日路线、景点、住宿、备选和完整出行细节。
 
+**在线访问：[冰岛冬行地图](https://jenningswang.github.io/iceland-winter-2026/)**
+
+已于 2026-10-26 发布并验证。打开网页后，点击地图、日期或 H 图钉查看详情；右上角「完整攻略」可阅读全部内容并打印 / 保存 PDF。
+
 ## 已确认的行程结构
 
 | 入住 → 退房 | 住宿区域 | 晚数 |
@@ -43,7 +47,7 @@ npm run build
 
 ## 发布到 GitHub Pages
 
-发布目标账号由用户指定为 **JenningsWang**。建议新仓库名：`iceland-winter-2026`。
+仓库：[`JenningsWang/iceland-winter-2026`](https://github.com/JenningsWang/iceland-winter-2026)。已配置 GitHub Actions 自动发布。以下步骤供迁移或重新部署时参考。
 
 1. 把源码放入该账号新仓库的 `main` 分支。
 2. 仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。
@@ -54,7 +58,7 @@ npm run build
 
 **不能只上传 ZIP 文件本身。** GitHub Pages 需要仓库内可直接读取的网页与资源，或者该项目的源文件与构建工作流。
 
-本说明不代表远端仓库已经创建或 Pages 已成功部署；实际发布状态需以 GitHub 操作结果为准。
+每次更新 `main` 分支都会先校验再发布。工作流结果可在仓库的 **Actions** 页面查看。
 
 ## 后续怎样更新酒店
 
