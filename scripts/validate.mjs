@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const ctx={window:{}};
-for(const f of ['data/trip.js','data/points.js','data/geo.js'])vm.runInNewContext(fs.readFileSync(path.join(root,f),'utf8'),ctx,{filename:f});
+for(const f of ['data/trip.js','data/trip-en.js','data/points.js','data/points-en.js','data/geo.js'])vm.runInNewContext(fs.readFileSync(path.join(root,f),'utf8'),ctx,{filename:f});
 const {ICELAND_TRIP:t,ICELAND_POINTS:p,ICELAND_GEO:g}=ctx.window;
 assert.equal(t.days.length,8);assert.equal(t.stays.length,5);assert.equal(t.stays.reduce((n,s)=>n+s.nights,0),7);
 assert.deepEqual(Array.from(t.stays,s=>s.nights),[1,2,1,1,2]);
@@ -22,6 +22,34 @@ const d7=g.routes.find(r=>r.id==='d7');assert(d7.distanceKm>400&&d7.distanceKm<4
 assert.equal(p.find(x=>x.id==='ice-cave').winter,'guided');assert.equal(p.find(x=>x.id==='reynisfjara').winter,'conditional');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');for(const m of html.matchAll(/(?:src|href)="([^"#]+)"/g)){const f=m[1];if(!/^https?:/.test(f))assert(fs.existsSync(path.join(root,f)),`Missing asset ${f}`);}
 new vm.Script(fs.readFileSync(path.join(root,'app.js'),'utf8'),{filename:'app.js'});
+new vm.Script(fs.readFileSync(path.join(root,'data/language.js'),'utf8'),{filename:'data/language.js'});
 JSON.parse(fs.readFileSync(path.join(root,'data/bookings.json'),'utf8'));
+
+// Translation must preserve the itinerary, geometry references and booking compatibility.
+const protectedFields=new Set(['id','date','startDate','endDate','updated','checked','checkIn','checkOut','localName','type','phase','sleepId','pointId','pointIds','sourceIds','status','pressure','plan','winter','kind']);
+const chinese=/[\u3400-\u9fff]/;
+function compareLocale(zh,en,trail=[]){
+  const label=trail.join('.');
+  assert.equal(typeof en,typeof zh,`${label}: translation type differs`);
+  if(Array.isArray(zh)){
+    assert(Array.isArray(en),`${label}: missing translated array`);
+    assert.equal(en.length,zh.length,`${label}: translated item count differs`);
+    zh.forEach((item,i)=>compareLocale(item,en[i],[...trail,i]));return;
+  }
+  if(zh && typeof zh==='object'){
+    assert.deepEqual(Object.keys(en).sort(),Object.keys(zh).sort(),`${label}: translation fields differ`);
+    for(const key of Object.keys(zh))compareLocale(zh[key],en[key],[...trail,key]);return;
+  }
+  const field=trail.at(-1),parent=trail.at(-2);
+  if(typeof zh!=='string' || protectedFields.has(field) || ['pointIds','sourceIds','days'].includes(parent) || /^https?:\/\//.test(zh)){
+    assert.equal(en,zh,`${label}: translation changed a protected value`);
+  }
+  if(typeof en==='string' && !['status','pressure'].includes(field))assert(!chinese.test(en),`${label}: untranslated English content`);
+  if(typeof zh==='string' && zh.trim())assert(en.trim(),`${label}: empty English content`);
+}
+compareLocale(t,ctx.window.ICELAND_TRIP_EN,['trip']);
+compareLocale(p,ctx.window.ICELAND_POINTS_EN,['points']);
+assert(html.includes('id="language-toggle"'),'Language switch missing');
+assert(html.indexOf('data/language.js')<html.indexOf('src="app.js"'),'Language selection must load before the application');
 console.log(`Validated: ${t.days.length} days, ${t.stays.length} bases, 7 nights, ${p.length} points, ${g.routes.length} road routes.`);
-console.log('All references, coordinates, dates, winter classes and local assets are consistent.');
+console.log('Both languages preserve all IDs, coordinates, dates, route references, winter classes and booking status values.');
