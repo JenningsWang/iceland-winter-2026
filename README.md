@@ -1,10 +1,21 @@
 # 冰岛冬行地图 · 2026.12.05–12
 
-一份中文交互式冰岛冬季自驾攻略。左侧是真实地理地图，右侧联动每日路线、景点、住宿、备选和完整出行细节。
+一份中英文交互式冰岛冬季自驾攻略。左侧是真实地理地图，右侧联动每日路线、景点、住宿、备选和完整出行细节。
 
 **在线访问：[冰岛冬行地图](https://jenningswang.github.io/iceland-winter-2026/)**
 
 已于 2026-10-26 发布并验证。打开网页后，点击地图、日期或 H 图钉查看详情；右上角「完整攻略」可阅读全部内容并打印 / 保存 PDF。
+
+## 中文 / English
+
+右上角 **English / 中文** 按钮可切换完整语言版本，包括所有景点、每日路线、住宿、冬季分类、地图说明和完整攻略。语言偏好保存在当前浏览器；带 `?lang=en` 或 `?lang=zh` 的链接优先使用指定语言。
+
+- [中文版](https://jenningswang.github.io/iceland-winter-2026/?lang=zh)
+- [English version](https://jenningswang.github.io/iceland-winter-2026/?lang=en)
+
+Use the **English / 中文** button in the top-right corner to switch the whole guide. The selected day, sight or stay remains open. Both languages share the same accommodation records; hotel names, addresses and personal notes stay exactly as entered. Unsaved accommodation edits are retained as a draft when switching languages.
+
+English content is provided locally in `data/trip-en.js` and `data/points-en.js`. No external translation service is used. The bilingual validation checks that dates, distances, coordinates, IDs and winter-access categories remain identical.
 
 ## 已确认的行程结构
 
@@ -75,7 +86,10 @@ npm run build
 | --- | --- |
 | `index.html` / `styles.css` / `app.js` | 页面、交互和打印攻略 |
 | `data/trip.js` | 8 天详细计划、5 处住宿、出行要点与来源 |
+| `data/trip-en.js` | 全部行程与住宿说明的英文版本 |
 | `data/points.js` | 全国地标、沿线备选与冬季分类 |
+| `data/points-en.js` | 全部 71 个地标的英文详情 |
+| `data/language.js` | 语言选择、偏好记忆与页面静态文字 |
 | `data/geo.js` | 海岸线、主干路、8 日路线和西端备选 |
 | `data/bookings.json` | 共享的酒店更新；初始为空 |
 | `scripts/validate.mjs` | 行程、夜数、坐标、关联与资源验证 |
